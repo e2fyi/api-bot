@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Class: ApiBot</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Class: ApiBot</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2><span class="attribs"><span class="type-signature"></span></span>
+            <span class="ancestors"><a href="module-ApiBot.html">ApiBot</a>.</span>ApiBot<span class="signature">(BotCmd, SrcBot, DstBot)</span><span class="type-signature"></span></h2>
+        
+            <div class="class-description">Class to handle events from any bots.</div>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+    
+    <h2>Constructor</h2>
+    
+
+    
+    <h4 class="name" id="ApiBot"><span class="type-signature"></span>new ApiBot<span class="signature">(BotCmd, SrcBot, DstBot)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Creates a new ApiBot instance.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>BotCmd</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">BotCmd</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Type of BotCmd to handle.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>SrcBot</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Bot</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Type of Bot the event came from.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>DstBot</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Bot</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Type of Bot to response to.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ApiBot.js.html">ApiBot.js</a>, <a href="ApiBot.js.html#line37">line 37</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="exec"><span class="type-signature"></span>exec<span class="signature">(event, rendererMap)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Parse the event, transfrom, and response to the pre-defined bot type.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+|
+
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Events from the a bot of type defined by `SrcBot`.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>rendererMap</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">RendererMap</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A map of command key and `Renderer` instances.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ApiBot.js.html">ApiBot.js</a>, <a href="ApiBot.js.html#line56">line 56</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ApiBot.html">ApiBot</a></li><li><a href="module-BotCmd.html">BotCmd</a></li><li><a href="module-Fbot.html">Fbot</a></li></ul><h3>Classes</h3><ul><li><a href="module-ApiBot.ApiBot.html">ApiBot</a></li><li><a href="module-ApiBot.Job.html">Job</a></li><li><a href="module-ApiBot.Renderer.html">Renderer</a></li><li><a href="module-ApiBot.RendererMap.html">RendererMap</a></li><li><a href="module-BotCmd.BaseCmd.html">BaseCmd</a></li><li><a href="module-BotCmd.SlashCmd.html">SlashCmd</a></li><li><a href="module-Fbot.Bot.html">Bot</a></li><li><a href="module-Fbot.Request.html">Request</a></li><li><a href="module-Fbot.Response.html">Response</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Oct 22 2017 17:26:25 GMT+0800 (DST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: RendererMap.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: RendererMap.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const request = require('request');
+const ev = require('safe-eval');
+const d3 = require('d3-format');
+
+/**
+ * Class to generate the functions to transform response body into rendered
+ * outputs to various bots.
+ * @alias module:ApiBot.Renderer
+ */
+class Renderer {
+  /**
+   * Create a new Renderer.
+   * @param {String} cmd
+   * @param {Object} config
+   */
+  constructor(cmd, config) {
+    this.cmd = cmd;
+    this.config = config;
+    this.fn = {
+      url: this._getUrl(config),
+      text: this._renderText(config)
+    };
+  }
+
+  parseResponse(job, body) {
+    if (
+      this.config.response &amp;&amp;
+      this.config.response.type.toLowerCase() === 'text'
+    ) {
+      job.body = body.length > 0 &amp;&amp; body;
+      job.error = body.length === 0 ? 'API return nothing' : job.error;
+    } else {
+      try {
+        job.body = JSON.parse(body);
+      } catch (error) {
+        job.error = error;
+        console.error({body, error});
+      }
+    }
+    return job.body &amp;&amp; !job.error;
+  }
+
+  query(job) {
+    return new Promise((resolve, reject) => {
+      var method = this.config.method || 'get';
+      request({method, url: job.url}, (error, response, body) => {
+        if (error) reject(error);
+        else {
+          if (this.parseResponse(job, body)) resolve(job);
+          else reject(job.error);
+        }
+      });
+    });
+  }
+
+  render(job) {
+    return new Promise((resolve, reject) => {
+      try {
+        var body = job.body;
+        var args = job.args;
+        job.text = Array.isArray(body)
+          ? body.map(o => this.fn.text(args, this.formatBody(o))).join('\n\n')
+          : this.fn.text(args, this.formatBody(body));
+        resolve(job);
+      } catch (error) {
+        console.error(error);
+        reject(error);
+      }
+    });
+  }
+
+  get format() {
+    return this.config.response &amp;&amp; this.config.response.format;
+  }
+
+  formatBody(job) {
+    if (!this.format) return job;
+    var format = this.format;
+    if (Array.isArray(job.body)) {
+      job.body = job.body.map(_formatEntry);
+    } else {
+      job.body = _formatEntry(job.body);
+    }
+    return job;
+
+    function _formatEntry(item) {
+      // apply on text body
+      if (typeof format === 'string' &amp;&amp; typeof item === 'string') {
+        return d3.format(format)(item);
+      }
+      // return raw string
+      if (typeof item === 'string') return item;
+      // apply on json Object
+      for (let key in format) {
+        if (item[key]) item[key] = d3.format(format[key])(item[key]);
+      }
+      return item;
+    }
+  }
+
+  getArgs(tokens) {
+    var config = this.config;
+    var args = Object.create(null);
+    Array.isArray(config.args) &amp;&amp;
+      config.args.forEach((key, i) => {
+        args[key] = tokens[i];
+      });
+    return args;
+  }
+
+  _getUrl(config) {
+    config = config || this.config;
+    try {
+      return ev('function(args) { return `' + config.url + '`;};');
+    } catch (err) {
+      console.error(err.stack);
+    }
+    return () => 'renderer error';
+  }
+
+  _renderText(config) {
+    config = config || this.config;
+    try {
+      return ev('function(args, body) { return `' + config.text + '`;};');
+    } catch (err) {
+      console.error(err.stack);
+    }
+    return () => 'renderer error';
+  }
+}
+
+/**
+ * Class to hold the current list of cmd/renderer.
+ * @alias module:ApiBot.RendererMap
+ */
+class RendererMap {
+  constructor(map) {
+    var cmdMap = Object.create(null);
+    for (let key in map) {
+      cmdMap[key] = new Renderer(key, map[key]);
+    }
+    this.map = cmdMap;
+  }
+
+  /**
+   * Add a new Renderer.
+   * @param {String} key
+   * @param {Object} config
+   */
+  add(key, config) {
+    this.map[key] = new Renderer(key, config);
+  }
+  /**
+   * Retrieve the renderer.
+   * @param {String} cmd
+   * @return {Renderer}
+   */
+  getRenderer(cmd) {
+    return this.map[cmd];
+  }
+}
+
+module.exports = {Renderer, RendererMap};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ApiBot.html">ApiBot</a></li><li><a href="module-BotCmd.html">BotCmd</a></li><li><a href="module-Fbot.html">Fbot</a></li></ul><h3>Classes</h3><ul><li><a href="module-ApiBot.ApiBot.html">ApiBot</a></li><li><a href="module-ApiBot.Job.html">Job</a></li><li><a href="module-ApiBot.Renderer.html">Renderer</a></li><li><a href="module-ApiBot.RendererMap.html">RendererMap</a></li><li><a href="module-BotCmd.BaseCmd.html">BaseCmd</a></li><li><a href="module-BotCmd.SlashCmd.html">SlashCmd</a></li><li><a href="module-Fbot.Bot.html">Bot</a></li><li><a href="module-Fbot.Request.html">Request</a></li><li><a href="module-Fbot.Response.html">Response</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Oct 22 2017 17:26:25 GMT+0800 (DST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
