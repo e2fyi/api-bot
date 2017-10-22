@@ -49,23 +49,24 @@ const fbevent = {
   ]
 };
 const sampleConfig = {
-  country: {
-    cmd: '/country',
-    args: ['name'],
-    method: 'get',
-    description: 'Get country general information',
-    url: 'https://restcountries.eu/rest/v2/name/${args.name}',
-    text:
-      '${body.name} can be found in ${body.region}, ${body.subregion}. ${body.name} has a population of ${body.population}.',
-    response: {
-      type: 'json',
-      format: {
-        population: ',d'
-      }
+  cmd: '/country',
+  args: ['name'],
+  method: 'get',
+  description: 'Get country general information',
+  url: 'https://restcountries.eu/rest/v2/name/${args.name}',
+  text:
+    '${body.name} can be found in ${body.subregion}. ${body.name} has a population of ${body.population}.',
+  response: {
+    type: 'json',
+    format: {
+      population: ',d'
     }
   }
 };
 
+/**
+ * Fb.Request
+ */
 describe('Fb.Request', function() {
   var fbrequests = Fb.Request.process(fbevent);
 
@@ -100,14 +101,75 @@ describe('Fb.Request', function() {
   });
 });
 
-/*
-describe('Renderer', function() {
-  var renderer = new Renderer(sampleConfig.cmd, sampleConfig);
+/**
+ * BotCmd
+ */
+describe('BotCmd.SlashCmd', function() {
+  var fbrequest = Fb.Request.process(fbevent)[0];
+  var slashcmd = new BotCmd.SlashCmd(fbrequest);
 
-  describe('#indexOf()', function() {
-    it('should return -1 when the value is not present', function() {
-      assert.equal(-1, renderer.fn.url());
+  describe('SlashCmd.cmd', function() {
+    it('Should return /country', function() {
+      assert.equal('/country', slashcmd.cmd);
+    });
+  });
+
+  describe('SlashCmd.tokens', function() {
+    it('Should return ["Singapore"]', function() {
+      assert.deepEqual(['Singapore'], slashcmd.tokens);
     });
   });
 });
-*/
+
+/**
+ * Renderer
+ */
+describe('Renderer', function() {
+  var renderer = new Renderer(sampleConfig.cmd, sampleConfig);
+
+  describe('Renderer.getArgs', function() {
+    it('should return {"name": "Singapore"} when input is ["Singapore"]', function() {
+      assert.deepEqual({name: 'Singapore'}, renderer.getArgs(['Singapore']));
+    });
+  });
+
+  describe('Renderer.fn.url', function() {
+    it('should return "https://restcountries.eu/rest/v2/name/Singapore"', function() {
+      assert.deepEqual(
+        'https://restcountries.eu/rest/v2/name/Singapore',
+        renderer.fn.url({name: 'Singapore'})
+      );
+    });
+  });
+
+  describe('Renderer.fn.text', function() {
+    it('should return "Singapore can be found in ASEAN. Singapore has a population of 50000000."', function() {
+      assert.deepEqual(
+        'Singapore can be found in ASEAN. Singapore has a population of 50000000.',
+        renderer.fn.text(
+          {name: 'Singapore'},
+          {name: 'Singapore', subregion: 'ASEAN', population: 50000000}
+        )
+      );
+    });
+  });
+});
+
+
+/**
+ * Job
+
+describe('Job', function() {
+  var fbrequest = Fb.Request.process(fbevent)[0];
+  var slashcmd = new BotCmd.SlashCmd(fbrequest);
+  var renderer = new Renderer(sampleConfig.cmd, sampleConfig);
+  var job = new Job(slashcmd, renderer, Fb.Bot);
+
+  describe('Renderer.fn.text', function() {
+    it('should return "Singapore can be found in ASEAN. Singapore has a population of 50000000."', function() {
+
+    });
+  });
+
+});
+ */
